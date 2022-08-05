@@ -73,3 +73,9 @@ myCachedNetworkImage(String url, int type) {
       },
       placeholder: (context, url) => circularProgress());
 }
+
+Future<bool> waitABit() async {
+  final time = await Future.delayed(const Duration(milliseconds: 300))
+      .then((value) => DateTime.now());
+  return true;
+}
