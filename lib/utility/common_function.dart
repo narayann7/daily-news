@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_news/utility/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,7 +30,7 @@ circularProgress({
 }
 
 myText(String content,
-    {String fontfamily = "Sen",
+    {String fontfamily = "Roboto Slab",
     double size = 20,
     int maxLine = 3,
     Color? color = Colors.white,
@@ -50,4 +51,25 @@ mainInit() {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+}
+
+myCachedNetworkImage(String url, int type) {
+  return CachedNetworkImage(
+      imageUrl: url,
+      errorWidget: (context, url, error) => const Text("error"),
+      imageBuilder: (context, imageProvider) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: type == 0
+                ? BorderRadius.circular(0)
+                : type == 2
+                    ? BorderRadius.circular(13)
+                    : const BorderRadius.only(
+                        topRight: Radius.circular(13),
+                        bottomRight: Radius.circular(13)),
+            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+          ),
+        );
+      },
+      placeholder: (context, url) => circularProgress());
 }
