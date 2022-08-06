@@ -1,5 +1,9 @@
+import 'dart:developer';
+
+import 'package:daily_news/controller/hive_db.dart';
 import 'package:daily_news/controller/home_cubit.dart';
 import 'package:daily_news/model/home_state.dart';
+import 'package:daily_news/utility/common_function.dart';
 import 'package:daily_news/utility/constants.dart';
 import 'package:daily_news/view/common_ui.dart';
 import 'package:daily_news/view/loading_shimmer.dart';
@@ -51,7 +55,23 @@ class _HomeState extends State<Home> {
         return false;
       },
       child: Scaffold(
-          floatingActionButton: FloatingActionButton(onPressed: () async {}),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: Row(
+            children: [
+              FloatingActionButton(onPressed: () async {
+                var data = await AppHiveDb.getAllData();
+                log(data.toString());
+                // log(jsonDecode(data[0].toString()).toString());
+                // NewsData newsData =
+                //     NewsData.fromJson(jsonDecode(data[0].toString()));
+                // log(newsData.toString());
+                // data = data.toString().replaceAll('(', '').replaceAll(')', '');
+                // log(jsonDecode(data).toString());
+              }),
+              FloatingActionButton(onPressed: () async {}),
+            ],
+          ),
           backgroundColor: background,
           appBar: AppBar(
             backgroundColor: black,
@@ -98,9 +118,21 @@ class _HomeState extends State<Home> {
                     }
                   },
                 );
+              } else if (state.status == STATUS.no_data) {
+                return Padding(
+                  padding: const EdgeInsets.all(40.0),
+                  child: Center(
+                      child: myText(
+                    "no cached data found, \nconnect to internet\nand try again",
+                  )),
+                );
               } else {
-                return const Center(
-                  child: Text("Something went wrong"),
+                return Padding(
+                  padding: const EdgeInsets.all(40.0),
+                  child: Center(
+                      child: myText(
+                    "Something went wrong, \nplease try again later",
+                  )),
                 );
               }
             },

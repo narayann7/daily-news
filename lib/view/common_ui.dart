@@ -10,7 +10,11 @@ Widget NewsCard(BuildContext context, Articles article) {
     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
     child: GestureDetector(
       onTap: () {
-        teleportWithArguments(context, NewsDetails.routeName, article);
+        teleportWithArguments(
+          context,
+          NewsDetails.routeName,
+          article,
+        );
       },
       child: SingleChildScrollView(
         child: Stack(

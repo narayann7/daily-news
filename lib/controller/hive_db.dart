@@ -17,16 +17,16 @@ class AppHiveDb {
   static Future<dynamic> getAllData() async {
     try {
       Box box = await Hive.openBox(dbName);
-      return box.toMap();
+      return box.values.toList();
     } catch (e) {
       return false;
     }
   }
 
-  static Future<dynamic> clearData(int index) async {
+  static Future<dynamic> clearData() async {
     try {
       Box box = await Hive.openBox(dbName);
-      box.clear();
+      box.deleteAt(0);
 
       return true;
     } catch (e) {

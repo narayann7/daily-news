@@ -51,6 +51,7 @@ myText(String content,
 mainInit() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

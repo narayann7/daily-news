@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:daily_news/controller/api_service.dart';
+import 'package:daily_news/controller/hive_db.dart';
 import 'package:daily_news/model/home_state.dart';
 import 'package:daily_news/model/news_data.dart';
 import 'package:daily_news/utility/constants.dart';
@@ -10,9 +15,19 @@ class HomeCubit extends Cubit<HomeState> {
   getNews() async {
     try {
       emit(state.copyWith(status: STATUS.loading));
+
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult == ConnectivityResult.none) {
+        await getDataFromDb();
+        return;
+      }
+
       var result = await ApiService.getNews(1);
       if (result is NewsData) {
+        await AppHiveDb.clearData();
+        await AppHiveDb.setData(jsonEncode(result.toJson()));
         emit(state.copyWith(status: STATUS.success, page: 1, newsData: result));
+        log(state.newsData.toString());
       } else if (result is String) {
         emit(state.copyWith(status: STATUS.error, error: result));
       }
@@ -44,6 +59,20 @@ class HomeCubit extends Cubit<HomeState> {
           ));
         }
       } catch (e) {}
+    }
+  }
+
+  getDataFromDb() async {
+    try {
+      var result = await AppHiveDb.getAllData();
+      if (result.toString() == "[]") {
+        emit(state.copyWith(status: STATUS.no_data));
+        return;
+      }
+      NewsData newsData = NewsData.fromJson(jsonDecode(result[0].toString()));
+      emit(state.copyWith(status: STATUS.success, newsData: newsData));
+    } catch (e) {
+      emit(state.copyWith(status: STATUS.error, error: e.toString()));
     }
   }
 }
