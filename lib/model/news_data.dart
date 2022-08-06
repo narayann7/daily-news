@@ -37,6 +37,18 @@ class NewsData {
   @override
   String toString() =>
       'NewsData(status: $status, totalResults: $totalResults, articles: $articles)';
+
+  NewsData copyWith({
+    String? status,
+    int? totalResults,
+    List<Articles>? articles,
+  }) {
+    return NewsData(
+      status: status ?? this.status,
+      totalResults: totalResults ?? this.totalResults,
+      articles: articles ?? this.articles,
+    );
+  }
 }
 
 class Articles {

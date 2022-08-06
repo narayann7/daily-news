@@ -12,7 +12,7 @@ class HomeCubit extends Cubit<HomeState> {
       emit(state.copyWith(status: STATUS.loading));
       var result = await ApiService.getNews(1);
       if (result is NewsData) {
-        emit(state.copyWith(status: STATUS.success, newsData: result));
+        emit(state.copyWith(status: STATUS.success, page: 1, newsData: result));
       } else if (result is String) {
         emit(state.copyWith(status: STATUS.error, error: result));
       }
@@ -22,6 +22,28 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   getNextPageNews() async {
-    if (state.status != STATUS.loading2) {}
+    if (state.status2 != STATUS.loading) {
+      emit(state.copyWith(status2: STATUS.loading));
+
+      try {
+        var result = await ApiService.getNews(state.page + 1);
+        if (result is NewsData) {
+          var data = state.newsData.articles;
+
+          for (var i = 0; i < result.articles!.length; i++) {
+            data!.add(result.articles![i]);
+          }
+          state.newsData.articles = data;
+          emit(state.copyWith(
+              status2: STATUS.success,
+              page: state.page + 1,
+              newsData: state.newsData));
+        } else if (result is String) {
+          emit(state.copyWith(
+            status2: STATUS.error,
+          ));
+        }
+      } catch (e) {}
+    }
   }
 }

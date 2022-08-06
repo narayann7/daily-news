@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_news/utility/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -81,4 +82,18 @@ Future<bool> waitABit() async {
   final time = await Future.delayed(const Duration(milliseconds: 300))
       .then((value) => DateTime.now());
   return true;
+}
+
+getToast(
+  BuildContext context,
+  String message,
+) {
+  return Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.grey,
+      textColor: Colors.black,
+      fontSize: 16.0);
 }
