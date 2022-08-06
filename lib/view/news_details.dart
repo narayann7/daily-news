@@ -1,16 +1,19 @@
+import 'package:daily_news/model/news_data.dart';
 import 'package:daily_news/utility/common_function.dart';
 import 'package:daily_news/utility/constants.dart';
 import 'package:flutter/material.dart';
 
 class NewsDetails extends StatelessWidget {
-  const NewsDetails({Key? key}) : super(key: key);
+  const NewsDetails({Key? key, required this.article}) : super(key: key);
   static const String routeName = '/NewsDetails';
-
-  static getNavigator() {
+  final Articles article;
+  static getNavigator(Articles article) {
     return MaterialPageRoute(
         settings: const RouteSettings(name: "/NewsDetails"),
         builder: (c) {
-          return const NewsDetails();
+          return NewsDetails(
+            article: article,
+          );
         });
   }
 
@@ -20,7 +23,7 @@ class NewsDetails extends StatelessWidget {
         backgroundColor: background,
         // appBar: eventDetailsAppbar(),
         body: Hero(
-            tag: "1234",
+            tag: article.url.toString(),
             child: Stack(
               children: [
                 SizedBox(
@@ -28,9 +31,7 @@ class NewsDetails extends StatelessWidget {
                   width: MediaQuery.of(context).size.width,
                   child: Stack(
                     children: [
-                      myCachedNetworkImage(
-                          "https://i.ytimg.com/vi/__FXp-MiY1o/maxresdefault.jpg",
-                          0),
+                      myCachedNetworkImage(article.urlToImage.toString(), 0),
                       Container(
                           height: MediaQuery.of(context).size.height,
                           width: MediaQuery.of(context).size.width,
@@ -88,7 +89,7 @@ class NewsDetails extends StatelessWidget {
                                   myText(
                                       size: 29,
                                       maxLine: 3,
-                                      "A comma-seperated string of  or blogs you want headlines from",
+                                      article.title.toString(),
                                       color: white),
                                   Padding(
                                     padding: const EdgeInsets.only(
@@ -100,18 +101,22 @@ class NewsDetails extends StatelessWidget {
                                         myText(
                                             size: 12,
                                             fontWeight: FontWeight.bold,
-                                            "Source ",
+                                            article.source!.name.toString(),
                                             color: text),
                                         const SizedBox(width: 5),
                                         myText(
-                                            size: 12, "10-9-22", color: text),
+                                            size: 12,
+                                            article.publishedAt
+                                                .toString()
+                                                .substring(0, 10),
+                                            color: text),
                                       ],
                                     ),
                                   ),
                                   myText(
                                       size: 14,
                                       maxLine: 20,
-                                      "ua et voluptua lobortis volutpat et no lorem dolore justo diam diam dolor hendrerit rebum. Vel dolores tempor aliquyam eos rebum dolores ea accumsan gubergren ut amet consetetur clita dolore feugiat dolores. Sit sit eos amet. Nisl ipsum nostrud ut ut justo eum magna augue esse velit dolor vero ipsum. Lo",
+                                      article.content.toString(),
                                       color: text2),
                                 ],
                               ),

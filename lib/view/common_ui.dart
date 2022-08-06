@@ -1,21 +1,22 @@
+import 'package:daily_news/model/news_data.dart';
 import 'package:daily_news/utility/common_function.dart';
 import 'package:daily_news/utility/constants.dart';
 import 'package:daily_news/view/news_details.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-Widget NewsCard(BuildContext context) {
+Widget NewsCard(BuildContext context, Articles article) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
     child: GestureDetector(
       onTap: () {
-        teleport(context, NewsDetails.routeName);
+        teleportWithArguments(context, NewsDetails.routeName, article);
       },
       child: SingleChildScrollView(
         child: Stack(
           children: [
             Hero(
-              tag: "1234",
+              tag: article.url.toString(),
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.25,
                 width: MediaQuery.of(context).size.width,
@@ -31,8 +32,7 @@ Widget NewsCard(BuildContext context) {
                     ),
                     color: Colors.transparent,
                     borderRadius: BorderRadius.circular(13)),
-                child: myCachedNetworkImage(
-                    "https://i.ytimg.com/vi/__FXp-MiY1o/maxresdefault.jpg", 2),
+                child: myCachedNetworkImage(article.urlToImage.toString(), 2),
               ),
             ),
             Container(
@@ -58,7 +58,7 @@ Widget NewsCard(BuildContext context) {
                     myText(
                         size: 20,
                         maxLine: 3,
-                        "A comma-seperated string of identifiers for the news sources or blogs you want headlines from",
+                        article.title.toString(),
                         color: text),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 12, top: 24),
@@ -69,10 +69,13 @@ Widget NewsCard(BuildContext context) {
                           myText(
                               size: 20,
                               fontWeight: FontWeight.bold,
-                              "Source ",
+                              article.source!.name.toString(),
                               color: text2),
                           const SizedBox(width: 5),
-                          myText(size: 12, "10-9-22", color: text2),
+                          myText(
+                              size: 12,
+                              article.publishedAt.toString().substring(0, 10),
+                              color: text2),
                         ],
                       ),
                     )

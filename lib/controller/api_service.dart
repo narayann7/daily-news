@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:daily_news/model/news_data.dart';
 import 'package:daily_news/utility/constants.dart';
 import 'package:http/http.dart' as http;
@@ -19,8 +18,7 @@ class ApiService {
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(response.body);
         NewsData newsData = NewsData.fromJson(jsonResponse);
-        log(newsData.toString());
-        return true;
+        return newsData;
       }
 
       return "Something went wrong. Please try again later";

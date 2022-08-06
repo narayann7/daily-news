@@ -3,6 +3,7 @@ import 'package:daily_news/utility/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 void teleport(BuildContext context, String screen) {
   Navigator.of(context).pushNamed(screen);
@@ -46,8 +47,9 @@ myText(String content,
   );
 }
 
-mainInit() {
+mainInit() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -57,7 +59,7 @@ mainInit() {
 myCachedNetworkImage(String url, int type) {
   return CachedNetworkImage(
       imageUrl: url,
-      errorWidget: (context, url, error) => const Text("error"),
+      errorWidget: (context, url, error) => Container(),
       imageBuilder: (context, imageProvider) {
         return Container(
           decoration: BoxDecoration(

@@ -1,8 +1,12 @@
 import 'dart:developer';
 
+import 'package:daily_news/controller/home_cubit.dart';
+import 'package:daily_news/model/home_state.dart';
 import 'package:daily_news/utility/constants.dart';
 import 'package:daily_news/view/common_ui.dart';
+import 'package:daily_news/view/loading_shimmer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
@@ -28,10 +32,13 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
 
+    context.read<HomeCubit>().getNews();
     scrollController.addListener(() async {
       if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent) {
-        log('scrollController.position.pixels == scrollController.position.maxScrollExtent');
+          scrollController.position.maxScrollExtent) {}
+      if (scrollController.position.pixels ==
+          scrollController.position.minScrollExtent) {
+        log("minnn");
       }
     });
   }
@@ -41,6 +48,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: FloatingActionButton(onPressed: () async {}),
         backgroundColor: background,
         appBar: AppBar(
           backgroundColor: black,
@@ -55,29 +63,26 @@ class _HomeState extends State<Home> {
           leading: Container(),
           centerTitle: true,
         ),
-        body: Center(
-          child: Column(
-            children: [NewsCard(context), newsCardShimmer(context)],
-          ),
-        )
-
-        //  ListView.builder(
-        //   physics: const BouncingScrollPhysics(
-        //       parent: AlwaysScrollableScrollPhysics()),
-        //   controller: scrollController,
-        //   itemCount: 20,
-        //   itemBuilder: (BuildContext context, int index) {
-        //     return Padding(
-        //       padding: const EdgeInsets.all(8.0),
-        //       child: Container(
-        //         alignment: Alignment.center,
-        //         height: MediaQuery.of(context).size.height * 0.2,
-        //         width: MediaQuery.of(context).size.width,
-        //         decoration: BoxDecoration(color: Colors.amber[100]),
-        //       ),
-        //     );
-        //   },
-        // ),
-        );
+        body: BlocBuilder<HomeCubit, HomeState>(
+          builder: (context, state) {
+            if (state.status == STATUS.loading) {
+              return const LoadingShimmer();
+            } else if (state.status == STATUS.success) {
+              return ListView.builder(
+                physics: const BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
+                controller: scrollController,
+                itemCount: state.newsData.articles!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return NewsCard(context, state.newsData.articles![index]);
+                },
+              );
+            } else {
+              return const Center(
+                child: Text("Something went wrong"),
+              );
+            }
+          },
+        ));
   }
 }

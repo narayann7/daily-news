@@ -5,6 +5,14 @@ class NewsData {
 
   NewsData({this.status, this.totalResults, this.articles});
 
+  factory NewsData.initial() {
+    return NewsData(
+      status: "",
+      totalResults: 0,
+      articles: [],
+    );
+  }
+
   NewsData.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     totalResults = json['totalResults'];
