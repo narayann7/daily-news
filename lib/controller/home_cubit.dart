@@ -43,16 +43,18 @@ class HomeCubit extends Cubit<HomeState> {
       try {
         var result = await ApiService.getNews(state.page + 1);
         if (result is NewsData) {
-          var data = state.newsData.articles;
+          if (result.articles!.isNotEmpty) {
+            var data = state.newsData.articles;
 
-          for (var i = 0; i < result.articles!.length; i++) {
-            data!.add(result.articles![i]);
+            for (var i = 0; i < result.articles!.length; i++) {
+              data!.add(result.articles![i]);
+            }
+            state.newsData.articles = data;
+            emit(state.copyWith(
+                status2: STATUS.success,
+                page: state.page + 1,
+                newsData: state.newsData));
           }
-          state.newsData.articles = data;
-          emit(state.copyWith(
-              status2: STATUS.success,
-              page: state.page + 1,
-              newsData: state.newsData));
         } else if (result is String) {
           emit(state.copyWith(
             status2: STATUS.error,

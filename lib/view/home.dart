@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:daily_news/controller/hive_db.dart';
 import 'package:daily_news/controller/home_cubit.dart';
 import 'package:daily_news/model/home_state.dart';
 import 'package:daily_news/utility/common_function.dart';
@@ -55,23 +52,6 @@ class _HomeState extends State<Home> {
         return false;
       },
       child: Scaffold(
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: Row(
-            children: [
-              FloatingActionButton(onPressed: () async {
-                var data = await AppHiveDb.getAllData();
-                log(data.toString());
-                // log(jsonDecode(data[0].toString()).toString());
-                // NewsData newsData =
-                //     NewsData.fromJson(jsonDecode(data[0].toString()));
-                // log(newsData.toString());
-                // data = data.toString().replaceAll('(', '').replaceAll(')', '');
-                // log(jsonDecode(data).toString());
-              }),
-              FloatingActionButton(onPressed: () async {}),
-            ],
-          ),
           backgroundColor: background,
           appBar: AppBar(
             backgroundColor: black,
@@ -91,32 +71,40 @@ class _HomeState extends State<Home> {
               if (state.status == STATUS.loading) {
                 return const LoadingShimmer();
               } else if (state.status == STATUS.success) {
-                return ListView.builder(
-                  physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics()),
-                  controller: scrollController,
-                  itemCount: state.newsData.articles!.length + 1,
-                  itemBuilder: (BuildContext context, int index) {
-                    if (index <= state.newsData.articles!.length - 1) {
-                      return NewsCard(context, state.newsData.articles![index]);
-                    } else {
-                      return state.status2 == STATUS.loading
-                          ? SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.2,
-                              width: MediaQuery.of(context).size.width,
-                              child: Center(
-                                child: SizedBox(
-                                    height: 60,
-                                    width: 60,
-                                    child: Image.asset(
-                                      "assets/loading.gif",
-                                      height: 125.0,
-                                      width: 125.0,
-                                    )),
-                              ))
-                          : Container();
-                    }
+                return RefreshIndicator(
+                  color: black,
+                  onRefresh: () {
+                    return context.read<HomeCubit>().getNews();
                   },
+                  child: ListView.builder(
+                    physics: const BouncingScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics()),
+                    controller: scrollController,
+                    itemCount: state.newsData.articles!.length + 1,
+                    itemBuilder: (BuildContext context, int index) {
+                      if (index <= state.newsData.articles!.length - 1) {
+                        return NewsCard(
+                            context, state.newsData.articles![index]);
+                      } else {
+                        return state.status2 == STATUS.loading
+                            ? SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.2,
+                                width: MediaQuery.of(context).size.width,
+                                child: Center(
+                                  child: SizedBox(
+                                      height: 60,
+                                      width: 60,
+                                      child: Image.asset(
+                                        "assets/loading.gif",
+                                        height: 125.0,
+                                        width: 125.0,
+                                      )),
+                                ))
+                            : Container();
+                      }
+                    },
+                  ),
                 );
               } else if (state.status == STATUS.no_data) {
                 return Padding(
