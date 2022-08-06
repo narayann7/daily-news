@@ -37,6 +37,7 @@ myText(String content,
     FontWeight fontWeight = FontWeight.normal}) {
   return Text(
     content,
+    textScaleFactor: 1,
     overflow: TextOverflow.fade,
     maxLines: maxLine,
     //maxLines: 3,

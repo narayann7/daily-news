@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:daily_news/utility/constants.dart';
 import 'package:daily_news/view/common_ui.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +22,22 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
+
+    scrollController.addListener(() async {
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent) {
+        log('scrollController.position.pixels == scrollController.position.maxScrollExtent');
+      }
+    });
   }
 
   int currentPos = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,6 +55,29 @@ class _HomeState extends State<Home> {
           leading: Container(),
           centerTitle: true,
         ),
-        body: Center(child: NewCard(context)));
+        body: Center(
+          child: Column(
+            children: [NewsCard(context), newsCardShimmer(context)],
+          ),
+        )
+
+        //  ListView.builder(
+        //   physics: const BouncingScrollPhysics(
+        //       parent: AlwaysScrollableScrollPhysics()),
+        //   controller: scrollController,
+        //   itemCount: 20,
+        //   itemBuilder: (BuildContext context, int index) {
+        //     return Padding(
+        //       padding: const EdgeInsets.all(8.0),
+        //       child: Container(
+        //         alignment: Alignment.center,
+        //         height: MediaQuery.of(context).size.height * 0.2,
+        //         width: MediaQuery.of(context).size.width,
+        //         decoration: BoxDecoration(color: Colors.amber[100]),
+        //       ),
+        //     );
+        //   },
+        // ),
+        );
   }
 }
