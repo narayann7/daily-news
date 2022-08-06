@@ -6,19 +6,22 @@ import 'package:daily_news/controller/api_service.dart';
 import 'package:daily_news/controller/hive_db.dart';
 import 'package:daily_news/model/home_state.dart';
 import 'package:daily_news/model/news_data.dart';
+import 'package:daily_news/utility/common_function.dart';
 import 'package:daily_news/utility/constants.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeState.initial());
 
-  getNews() async {
+  getNews(BuildContext context) async {
     try {
       emit(state.copyWith(status: STATUS.loading));
 
       var connectivityResult = await (Connectivity().checkConnectivity());
       if (connectivityResult == ConnectivityResult.none) {
         await getDataFromDb();
+        getToast(context, "No Network");
         return;
       }
 
@@ -43,18 +46,16 @@ class HomeCubit extends Cubit<HomeState> {
       try {
         var result = await ApiService.getNews(state.page + 1);
         if (result is NewsData) {
-          if (result.articles!.isNotEmpty) {
-            var data = state.newsData.articles;
+          var data = state.newsData.articles;
 
-            for (var i = 0; i < result.articles!.length; i++) {
-              data!.add(result.articles![i]);
-            }
-            state.newsData.articles = data;
-            emit(state.copyWith(
-                status2: STATUS.success,
-                page: state.page + 1,
-                newsData: state.newsData));
+          for (var i = 0; i < result.articles!.length; i++) {
+            data!.add(result.articles![i]);
           }
+          state.newsData.articles = data;
+          emit(state.copyWith(
+              status2: STATUS.success,
+              page: result.articles!.isEmpty ? state.page : state.page + 1,
+              newsData: state.newsData));
         } else if (result is String) {
           emit(state.copyWith(
             status2: STATUS.error,

@@ -94,7 +94,7 @@ getToast(
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
-      backgroundColor: Colors.grey,
-      textColor: Colors.black,
+      backgroundColor: white,
+      textColor: black,
       fontSize: 16.0);
 }

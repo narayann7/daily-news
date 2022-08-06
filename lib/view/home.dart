@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
 
-    context.read<HomeCubit>().getNews();
+    context.read<HomeCubit>().getNews(context);
     scrollController.addListener(() async {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
@@ -74,7 +74,7 @@ class _HomeState extends State<Home> {
                 return RefreshIndicator(
                   color: black,
                   onRefresh: () {
-                    return context.read<HomeCubit>().getNews();
+                    return context.read<HomeCubit>().getNews(context);
                   },
                   child: ListView.builder(
                     physics: const BouncingScrollPhysics(
