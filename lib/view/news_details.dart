@@ -90,6 +90,7 @@ class NewsDetails extends StatelessWidget {
                                       size: 29,
                                       maxLine: 3,
                                       article.title.toString(),
+                                      fontWeight: FontWeight.bold,
                                       color: white),
                                   Padding(
                                     padding: const EdgeInsets.only(
@@ -99,13 +100,13 @@ class NewsDetails extends StatelessWidget {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         myText(
-                                            size: 12,
+                                            size: 20,
                                             fontWeight: FontWeight.bold,
                                             article.source!.name.toString(),
                                             color: text),
                                         const SizedBox(width: 5),
                                         myText(
-                                            size: 12,
+                                            size: 20,
                                             article.publishedAt
                                                 .toString()
                                                 .substring(0, 10),
